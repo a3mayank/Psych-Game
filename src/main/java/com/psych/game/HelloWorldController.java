@@ -1,5 +1,6 @@
 package com.psych.game;
 
+import com.psych.game.model.GameMode;
 import com.psych.game.model.Player;
 import com.psych.game.model.Question;
 import com.psych.game.repositories.PlayerRepository;
@@ -26,11 +27,29 @@ public class HelloWorldController {
         return "Hello World";
     }
 
-//    public String populateDB() {
-//        // add some data
-//        Player luffy = new Player();
-//        return luffy;
-//    }
+    @GetMapping("/populate")
+    public String populateDB() {
+        Player luffy = new Player.Builder()
+                .alias("Monkey D. Luffy")
+                .email("luffy@psych.com")
+                .saltedHashedPassword("mugiwara")
+                .build();
+        playerRepository.save(luffy);
+
+        Player robin = new Player.Builder()
+                .alias("Nico Robin")
+                .email("robin@psych.com")
+                .saltedHashedPassword("poneglyph")
+                .build();
+        playerRepository.save(robin);
+
+        questionRepository.save(new Question(
+                "What is the most important Poneglyph",
+                "Rio Poneglyph",
+                GameMode.IS_THIS_A_FACT));
+
+        return "Populated";
+    }
 
     @GetMapping("/questions")
     public List<Question> getAllQuestions() {
@@ -42,9 +61,18 @@ public class HelloWorldController {
         return questionRepository.findById(id).orElseThrow();
     }
 
+    @GetMapping("/players")
+    public List<Player> getAllPlayers() {
+        return playerRepository.findAll();
+    }
+
+    @GetMapping("/player/{id}")
+    public Player getPlayerById(@PathVariable(name="id") Long id) {
+        return playerRepository.findById(id).orElseThrow();
+    }
+
     // create above 2 functions for
     // Games
-    // Players
     // Admins
     // Questions
     // Rounds

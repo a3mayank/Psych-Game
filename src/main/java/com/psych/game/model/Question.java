@@ -29,9 +29,16 @@ public class Question extends Auditable {
     private Set<EllenAnswer> ellenAnswer = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
-//    @ManyToOne
     @NotNull
     @Getter
     @Setter
     private GameMode gameMode;
+
+    public Question() {}
+
+    public Question(@NotNull String question, @NotNull String correctAnswer, @NotNull GameMode gameMode) {
+        this.question = question;
+        this.correctAnswer = correctAnswer;
+        this.gameMode = gameMode;
+    }
 }
