@@ -37,4 +37,12 @@ public abstract class Auditable implements Serializable {
     @Getter
     @Setter
     private Date updatedAt = new Date();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Auditable) {
+            return ((Auditable) obj).getId().equals(getId());
+        }
+        return super.equals(obj);
+    }
 }

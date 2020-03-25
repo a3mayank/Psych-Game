@@ -1,12 +1,10 @@
-package com.psych.game;
+package com.psych.game.controller;
 
-import com.psych.game.model.Game;
-import com.psych.game.model.GameMode;
-import com.psych.game.model.Player;
-import com.psych.game.model.Question;
+import com.psych.game.model.*;
 import com.psych.game.repositories.GameRepository;
 import com.psych.game.repositories.PlayerRepository;
 import com.psych.game.repositories.QuestionRepository;
+import com.psych.game.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dev-test")
-public class HelloWorldController {
+public class DevTestController {
     @Autowired // dependency inversion in spring
     private PlayerRepository playerRepository;
 
@@ -27,6 +25,9 @@ public class HelloWorldController {
     @Autowired // dependency inversion in spring
     private GameRepository gameRepository;
 
+    @Autowired // dependency inversion in spring
+    private UserRepository userRepository;
+
     @GetMapping("/")
     public String hello() {
         return "Hello World";
@@ -34,6 +35,11 @@ public class HelloWorldController {
 
     @GetMapping("/populate")
     public String populateDB() {
+        for (Player player : playerRepository.findAll()) {
+            player.getGames().clear();
+            playerRepository.save(player);
+        }
+
         gameRepository.deleteAll();
         playerRepository.deleteAll();
         questionRepository.deleteAll();
@@ -61,10 +67,11 @@ public class HelloWorldController {
         gameRepository.save(game);
 
         //add question to DB
-        questionRepository.save(new Question(
+        Question question = new Question(
                 "What is the most important Poneglyph",
                 "Rio Poneglyph",
-                GameMode.IS_THIS_A_FACT));
+                GameMode.IS_THIS_A_FACT);
+        questionRepository.save(question);
 
         return "Populated";
     }
@@ -89,6 +96,16 @@ public class HelloWorldController {
         return playerRepository.findById(id).orElseThrow();
     }
 
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @GetMapping("/user/{id}")
+    public User getUserById(@PathVariable(name="id") Long id) {
+        return userRepository.findById(id).orElseThrow();
+    }
+
     @GetMapping("/games")
     public List<Game> getAllGames() {
         return gameRepository.findAll();
@@ -99,10 +116,8 @@ public class HelloWorldController {
         return gameRepository.findById(id).orElseThrow();
     }
 
-    // create above 2 functions for
-    // Games
+    // create functions for
     // Admins
-    // Questions
     // Rounds
     // ContentWriters
 }
