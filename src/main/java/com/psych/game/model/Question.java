@@ -1,5 +1,6 @@
 package com.psych.game.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.engine.internal.Cascade;
@@ -24,6 +25,7 @@ public class Question extends Auditable {
     private String correctAnswer;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
+    @JsonManagedReference
     @Getter
     @Setter
     private Set<EllenAnswer> ellenAnswer = new HashSet<>();
